@@ -1,8 +1,7 @@
 from imutils.video import VideoStream
-from flask import Response, Flask, render_template, request
+from flask import Response, Flask, render_template
 import threading
 import argparse
-import imutils
 import time
 import cv2
 from data import facedetect
@@ -14,21 +13,25 @@ lock = threading.Lock()
 
 app = Flask(__name__)
 
-vs = None
+vs = VideoStream(src=0)
 time.sleep(2)
-
+dat = 'stop'
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    templateData = {
+        'camera': camera
+    }
+    return render_template("index.html", **templateData)
 
 
 def detect_face(frameCount):
-    global vs, outputFrame, lock
-
+    global vs, outputFrame, lock, dat
     data = pickle.loads(open('encodings.pickle', "rb").read())
     total = 0
     while True:
+        if dat == 'stop':
+            continue
         frame = vs.read()
         if total > frameCount:
             face, confidence = facedetect.detect_face(frame)
@@ -55,6 +58,7 @@ def detect_face(frameCount):
                 cv2.rectangle(frame, (left - 20, bottom - 15), (right + 20, bottom + 20), (255, 0, 0), cv2.FILLED)
                 font = cv2.FONT_HERSHEY_DUPLEX
                 cv2.putText(frame, name, (left - 20, bottom + 15), font, 1.0, (255, 255, 255), 2)
+        print(frame)
         total += 1
         with lock:
             outputFrame = frame.copy()
@@ -62,30 +66,43 @@ def detect_face(frameCount):
 
 def generate():
     global outputFrame, lock
+    print("=========-0")
     while True:
+        if dat == 'stop':
+            continue
+        print(outputFrame)
         with lock:
             if outputFrame is None:
                 continue
-            (flag, encodedImage) = cv2.imencode(".jpg", outputFrame)
-
+            if dat == 'activate':
+                (flag, encodedImage) = cv2.imencode(".jpg", outputFrame)
             if not flag:
                 continue
         yield(b'--frame\r\n' b'Content-Type: image/jpeg\r\n\r\n' + bytearray(encodedImage) + b'\r\n')
 
 
-@app.route("/camera", methods=["GET"])
-def camera():
-    global vs
-    data = request.args.get('data')
-    if data == 'activate':
+@app.route("/camera/<parm>")
+def camera(parm):
+    global vs, dat
+    print("===========1")
+    dat = parm
+    if dat == 'activate':
         vs = VideoStream(src=0).start()
-    elif data == 'stop':
-        vs = VideoStream(src=0).stop()
+    elif dat == 'stop':
+        vs.stop()
+        vs.stream.release()
+    templateData = {
+        'camera': camera
+    }
+    return render_template("index.html", **templateData)
 
 
 @app.route("/video_feed")
 def video_feed():
-    return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    if dat == 'activate':
+        return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
+    else:
+        return Response()
 
 
 if __name__ == '__main__':

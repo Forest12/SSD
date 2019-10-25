@@ -2,3 +2,6 @@ numpy
 tensorflow-gpu
 dlib
 opencv-contrib-python
+flask
+imutils
+socketIO-client

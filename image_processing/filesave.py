@@ -3,16 +3,16 @@ import os
 import time
 import facestrain
 
-path = os.path.dirname(os.path.abspath(__file__)) + "\images"
-
-filename = input()
-filepath = os.path.join(path+"\/"+filename)
-try:
-    if not(os.path.isdir(filepath)):
-        os.makedirs(filepath)
-except OSError as e:
-    print("Failed")
-print(filepath)
+def makefile(data):
+    path = os.path.dirname(os.path.abspath(__file__)) + "\images"
+    filename = data
+    filepath = os.path.join(path+"\/"+filename)
+    try:
+        if not(os.path.isdir(filepath)):
+            os.makedirs(filepath)
+    except OSError as e:
+        print("Failed")
+    print(filepath)
 
 def capture():
     cam = cv2.VideoCapture(0)
