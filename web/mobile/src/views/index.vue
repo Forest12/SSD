@@ -1,34 +1,59 @@
 <template>
-  <div class="ion-page">
+  <ion-tabs>
+    <ion-tab tab="camera" :routes="'Index'">
+      <Camera :socket="socket" />
+      <ChatBox :socket="socket" />
+    </ion-tab>
+
+    <ion-tab tab="settings"></ion-tab>
+
     <ion-header>
       <ion-toolbar>
         <ion-title>SmartDoor</ion-title>
       </ion-toolbar>
     </ion-header>
-    <ion-content class="ion-padding">
-      <ion-button @click="pushNotification">구독</ion-button>
-      <Camera/>
-    </ion-content>
-  </div>
+    
+    <template slot="bottom">
+      <ion-tab-bar>
+        <ion-tab-button tab="camera" :to="{ name: 'Index' }">
+          <ion-icon name="camera"></ion-icon>
+          <ion-label>카메라</ion-label>
+        </ion-tab-button>
+
+        <ion-tab-button tab="settings" @click="go">
+          <ion-icon name="settings"></ion-icon>
+          <ion-label>환경설정</ion-label>
+        </ion-tab-button>
+      </ion-tab-bar>
+    </template>
+  </ion-tabs>
 </template>
 
 <script>
 // import caxios from "@/plugins/corsaxios";
 import Camera from '@/components/camera/Camera.vue'
+import ChatBox from '@/components/chat/ChatBox.vue'
+import io from 'socket.io-client'
+
 export default {
-  name: 'MainPage',
+  name: 'Index',
   data () {
     return {
-      Server: this.$store.state.server
+      Server: this.$store.state.server,
+      socket: ''
     }
   },
   components: {
-    Camera
+    Camera,
+    ChatBox
   },
   created () {
-    // this.subscribe();
+    this.ConnectSocket()
   },
   methods: {
+    ConnectSocket () {
+      this.socket = io(this.Server)
+    },
     /* eslint-disable */
     urlBase64ToUint8Array(base64String) {
       const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
