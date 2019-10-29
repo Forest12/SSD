@@ -12,9 +12,9 @@ module.exports = (server) => {
             console.log(data);
             io.emit('action', data);
         });
-
         
         socket.on('Camera', function(img){
+            console.log(img);
             io.emit('Image',img);
         });
 
