@@ -1,9 +1,10 @@
 const mongoose = require('mongoose');
 var moment = require('moment');
+const uri = "mongodb+srv://SmartDoorDB:oqMW81CaG2d8FL17@cluster0-3044t.mongodb.net/test?retryWrites=true&w=majority";
 
 module.exports = () => {
   function connect() {
-    mongoose.connect('mongodb://localhost:27017/SmartDoor',
+    mongoose.connect(uri,{ useNewUrlParser: true, useUnifiedTopology: true },
       function (error) {
         if (error) {
           console.error('mongodb connection error', error);
@@ -17,3 +18,4 @@ module.exports = () => {
   connect();
   mongoose.connection.on('disconnected', connect);
 };
+

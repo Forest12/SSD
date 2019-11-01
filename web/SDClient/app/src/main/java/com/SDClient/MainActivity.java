@@ -1,14 +1,20 @@
 package com.SDClient;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import java.net.URISyntaxException;
 
@@ -18,13 +24,13 @@ import io.socket.emitter.Emitter;
 
 
 public class MainActivity extends AppCompatActivity {
+    private String token;
     private Socket mSocket;
     private String imageUrl = "";
-    private Context mContext;
     private ImageView video;
     {
         try {
-            mSocket = IO.socket("http://192.168.31.55:3000");
+            mSocket = IO.socket("http://52.78.55.73:3000");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -33,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mContext = this;
         video = (ImageView) findViewById(R.id.video);
 
         mSocket.connect();
@@ -43,9 +48,18 @@ public class MainActivity extends AppCompatActivity {
         send.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSocket.emit("moblie","start");
+                mSocket.emit("moblie",token);
             }
         });
+
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        token = task.getResult().getToken();
+                    }
+                });
+
     }
 
     private Emitter.Listener image = new Emitter.Listener() {
@@ -56,9 +70,10 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     String receivedData = (String) args[0];
                     imageUrl = receivedData;
-                    Glide.with(mContext).load(imageUrl).into(video);
+                    Glide.with(MainActivity.this).load(imageUrl).into(video);
                 }
             });
         }
     };
+
 }

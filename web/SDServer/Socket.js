@@ -3,6 +3,7 @@ var moment = require('moment');
 
 module.exports = (server) => {
     var io = SocketIO(server);
+    
     console.log("소켓IO 서버 오픈");
 
     io.on('connection', function (socket) {
