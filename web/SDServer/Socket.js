@@ -9,9 +9,8 @@ module.exports = (server) => {
     io.on('connection', function (socket) {
         console.log("유저가 접속하였습니다 :: ", moment().format("YYYY-MM-DD HH:mm:ss"));
 
-        socket.on('moblie', function (data) {
+        socket.on('Token', function (data) {
             console.log(data);
-            io.emit('action', data);
         });
         
         socket.on('Camera', function(img){

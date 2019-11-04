@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView video;
     {
         try {
-            mSocket = IO.socket("http://52.78.55.73:3000");
+            mSocket = IO.socket("http://192.168.31.55:3000");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         send.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSocket.emit("moblie",token);
+                mSocket.emit("Token",token);
             }
         });
 

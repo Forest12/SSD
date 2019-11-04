@@ -5,8 +5,6 @@ var logger = require('morgan');
 var Mongodb = require('./MongoDB');
 var cors = require('cors');
 
-
-
 var indexRouter = require('./routes/index');
 var ResidentRouter = require('./routes/Resident');
 

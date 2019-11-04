@@ -12,6 +12,7 @@
     "express": "~4.16.1",
     "fcm-node": "^1.5.2",
     "firebase-admin": "^8.6.1",
+    "firebase-functions": "^3.3.0",
     "http-errors": "~1.6.3",
     "moment": "^2.24.0",
     "mongodb": "^3.3.2",
