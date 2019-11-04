@@ -3,12 +3,11 @@ package com.SDClient;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,7 +43,8 @@ public class MainActivity extends AppCompatActivity {
         mSocket.connect();
         mSocket.on("Image",image);
 
-        Button send = (Button)findViewById(R.id.button);
+
+        ImageButton send = (ImageButton)findViewById(R.id.setting);
         send.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
