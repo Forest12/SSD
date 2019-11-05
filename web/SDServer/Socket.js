@@ -32,7 +32,7 @@ module.exports = (server) => {
                         if (err) {
                             console.error(err);
                         }
-                        io.emit('DoorMsg', "등록되었습니다");
+                        io.emit('DoorMsg', "기기가 등록되었습니다");
                     });
                 }
                 
@@ -40,7 +40,6 @@ module.exports = (server) => {
         });
         
         socket.on('Camera', function(img){
-            console.log(img);
             io.emit('Image',img);
         });
 
@@ -73,7 +72,7 @@ module.exports = (server) => {
                     });
             })
 
-            //io.emit('DoorMsg', data);
+            io.emit('DoorMsg', data);
         });
     });
 };

@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -17,6 +16,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
+import com.squareup.picasso.Picasso;
 
 import java.net.URISyntaxException;
 
@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private String token;
     private Socket mSocket;
     private String imageUrl = "";
-    private ImageView video;
+
     private String URL = "http://52.78.55.73:3000";
 
     {
@@ -42,17 +42,18 @@ public class MainActivity extends AppCompatActivity {
     TextView resident;
     Toast toast;
     ImageButton mic, mic_off, speak, speak_off, view, view_off, send;
-
+    ImageView video;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        video = (ImageView) findViewById(R.id.video);
+
 
         mSocket.connect();
         mSocket.on("Image",image);
         mSocket.on("DoorMsg", message);
 
+        video = (ImageView) findViewById(R.id.video);
         resident = (TextView)findViewById(R.id.resident);
 
         /* ------이미지 버튼------ */
@@ -69,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //mSocket.emit("MobileMsg","start");
+
                 mic.setVisibility(View.GONE);
                 mic_off.setVisibility(View.VISIBLE);
             }
@@ -145,8 +147,14 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     String receivedData = (String) args[0];
-                    imageUrl = receivedData;
-                    Glide.with(MainActivity.this).load(imageUrl).into(video);
+
+
+                    Glide.with(MainActivity.this)
+                            .load(receivedData)
+                            .centerCrop()
+                            .dontAnimate()
+                            .into(video);
+
                 }
             });
         }
@@ -164,4 +172,10 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mSocket.disconnect();
+    }
 }
