@@ -60,4 +60,3 @@ while True:
         #filesave
         continue
 
-sio.disconnect()
