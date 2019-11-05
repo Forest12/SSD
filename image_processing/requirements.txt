@@ -1,5 +1,7 @@
 numpy
-sklearn
 tensorflow-gpu
 dlib
-opencv-python
+opencv-contrib-python
+flask
+imutils
+socketIO-client
